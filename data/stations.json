@@ -1,0 +1,48 @@
+{
+  "lines": [
+    {
+      "id": 1,
+      "name": "خط 1",
+      "color": "#0066cc",
+      "stations": [
+        {
+          "id": "dastgheib",
+          "name": "شهید دستغیب",
+          "lat": 29.61,
+          "lng": 52.59
+        },
+        {
+          "id": "doran",
+          "name": "شهید دوران",
+          "lat": 29.608,
+          "lng": 52.58
+        },
+        {
+          "id": "forsat",
+          "name": "فرصت شیرازی",
+          "lat": 29.605,
+          "lng": 52.57
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "خط 2",
+      "color": "#e91e63",
+      "stations": [
+        {
+          "id": "imam-hossein",
+          "name": "امام حسین",
+          "lat": 29.608,
+          "lng": 52.58
+        },
+        {
+          "id": "esteghlal",
+          "name": "استقلال",
+          "lat": 29.605,
+          "lng": 52.57
+        }
+      ]
+    }
+  ]
+}
