@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 
-import metroData from "@/data/stations.json"
+import metroData from "@/data/stations.json";
 
 type Station = {
   id: string;
@@ -21,9 +21,13 @@ type MetroLine = {
 
 type MapProps = {
   onStationClick: (station: Station) => void;
+  selectedStation: Station | null;
 };
 
-const createStationIcon = (L: typeof import("leaflet"), color: string) => {
+const createStationIcon = (
+  L: typeof import("leaflet"),
+  color: string,
+) => {
   return L.divIcon({
     className: "",
     html: `
@@ -41,8 +45,12 @@ const createStationIcon = (L: typeof import("leaflet"), color: string) => {
   });
 };
 
-export default function Map({ onStationClick }: MapProps) {
+export default function Map({
+  onStationClick,
+  selectedStation,
+}: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
+
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
@@ -65,33 +73,36 @@ export default function Map({ onStationClick }: MapProps) {
         {
           attribution: "&copy; OpenStreetMap contributors",
           maxZoom: 19,
-        }
+        },
       ).addTo(map);
 
       const lines = metroData.lines as MetroLine[];
 
       lines.forEach((line) => {
-        const linePoints: [number, number][] = line.stations.map(
-          (station) => [station.lat, station.lng]
-        );
+        const linePoints: [number, number][] =
+          line.stations.map((station) => [
+            station.lat,
+            station.lng,
+          ]);
 
-        // خط مترو
         L.polyline(linePoints, {
           color: line.color || "#0066cc",
           weight: 4,
           opacity: 0.85,
         }).addTo(map!);
 
-        // ایستگاه‌ها
         line.stations.forEach((station) => {
           const stationIcon = createStationIcon(
             L,
-            line.color
+            line.color,
           );
 
-          L.marker([station.lat, station.lng], {
-            icon: stationIcon,
-          })
+          L.marker(
+            [station.lat, station.lng],
+            {
+              icon: stationIcon,
+            },
+          )
             .addTo(map!)
             .on("click", () => {
               onStationClick(station);
@@ -99,9 +110,8 @@ export default function Map({ onStationClick }: MapProps) {
         });
       });
 
-      // تمام ایستگاه‌ها
       const allStations = lines.flatMap(
-        (line) => line.stations
+        (line) => line.stations,
       );
 
       const allPoints: [number, number][] =
@@ -136,6 +146,19 @@ export default function Map({ onStationClick }: MapProps) {
       mapRef.current = null;
     };
   }, [onStationClick]);
+
+  useEffect(() => {
+    if (!selectedStation || !mapRef.current) return;
+
+    mapRef.current.flyTo(
+      [selectedStation.lat, selectedStation.lng],
+      17,
+      {
+        animate: true,
+        duration: 1.5,
+      },
+    );
+  }, [selectedStation]);
 
   return (
     <div
